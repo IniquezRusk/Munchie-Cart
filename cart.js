@@ -103,17 +103,35 @@ function submitOrder(event) {
         return;
     }
 
-    // clear cart
-    localStorage.removeItem("cart");
-    loadCart();
+    const orderData = {
+        first_name: document.getElementById("first-name").value,
+        last_name: document.getElementById("last-name").value,
+        email: document.getElementById("email").value,
+        address_line1: document.getElementById("address1").value,
+        address_line2: document.getElementById("address2").value,
+        phone: document.getElementById("phone").value,
+        total_price: cart.reduce((sum, item) => sum + item.price * (item.quantity || 1), 0),
+        items: cart
+    };
 
-    // show success screen
-    const overlay = document.getElementById("order-success");
-    overlay.classList.add("show");
-}
-
-function goHome() {
-    window.location.href = "index.html";
+    fetch("place_order.php", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(orderData)
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            alert("Order placed successfully! Order ID: " + data.order_id);
+            localStorage.removeItem("cart");
+            loadCart();
+        } else {
+            alert("Something went wrong.");
+        }
+    })
+    .catch(err => console.error(err));
 }
 
 loadCart();
