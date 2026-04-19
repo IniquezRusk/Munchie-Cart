@@ -1,13 +1,25 @@
 <?php
-header("Content-Type: application/json")
+header("Content-Type: application/json");
 
 $conn = new mysqli("localhost", "root", "", "munchiecart");
 
 if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
+    echo json_encode([
+        "success" => false,
+        "message" => "Database connection failed"
+    ]);
+    exit;
 }
 
 $data = json_decode(file_get_contents("php://input"), true);
+
+if (!$data || !isset($data["items"])) {
+    echo json_encode([
+        "success" => false,
+        "message" => "Invalid order data"
+    ]);
+    exit;
+}
 
 $first_name = $data["first_name"];
 $last_name = $data["last_name"];
@@ -18,43 +30,88 @@ $phone = $data["phone"];
 $total_price = $data["total_price"];
 $items = $data["items"];
 
-$sql = "INSERT INTO orders
-(first_name, last_name, email, address_line1, address_line2, phone, total_price)
-VALUES (?, ?, ?, ?, ?, ?, ?)";
+$conn->begin_transaction();
 
-$stmt = $conn->prepare($sql);
-$stmt->bind_param(
-    "ssssssd",
-    $first_name,
-    $last_name,
-    $email,
-    $address_line1,
-    $address_line2,
-    $phone,
-    $total_price
-);
-$stmt->execute();
+try {
+    $sql = "INSERT INTO orders
+    (first_name, last_name, email, address_line1, address_line2, phone, total_price)
+    VALUES (?, ?, ?, ?, ?, ?, ?)";
 
-$order_id = $stmt->insert_id;
+    $stmt = $conn->prepare($sql);
 
-$item_sql = "INSERT INTO order_items (order_id, meal_id, meal_name, quantity, price, customizations)
-VALUES (?, ?, ?, ?, ?, ?)";
-$item_stmt = $conn->prepare($item_sql);
+    if (!$stmt) {
+        throw new Exception("Failed to prepare order statement");
+    }
 
-foreach ($items as $item) {
-    $meal_id = $item["id"];
-    $meal_name = $item["name"];
-    $quantity = $item["quantity"];
-    $price = $item["price"];
-    $customizations  = isset($item["customizations"]) ? json_encode($item["customizations"]) : null;
+    $stmt->bind_param(
+        "ssssssd",
+        $first_name,
+        $last_name,
+        $email,
+        $address_line1,
+        $address_line2,
+        $phone,
+        $total_price
+    );
 
-    $item_stmt->bind_param("iisids", $order_id, $meal_id, $meal_name, $quantity, $price, $customizations);
-    $item_stmt->execute();
+    if (!$stmt->execute()) {
+        throw new Exception("Failed to insert order");
+    }
+
+    $order_id = $stmt->insert_id;
+
+    $item_sql = "INSERT INTO order_items
+    (order_id, meal_id, meal_name, quantity, price, customizations)
+    VALUES (?, ?, ?, ?, ?, ?)";
+
+    $item_stmt = $conn->prepare($item_sql);
+
+    if (!$item_stmt) {
+        throw new Exception("Failed to prepare order items statement");
+    }
+
+    foreach ($items as $item) {
+        $meal_id = $item["id"];
+        $meal_name = $item["name"];
+        $quantity = isset($item["quantity"]) ? $item["quantity"] : 1;
+        $price = $item["price"];
+        $customizations = isset($item["customizations"])
+            ? json_encode($item["customizations"])
+            : null;
+
+        $item_stmt->bind_param(
+            "iisids",
+            $order_id,
+            $meal_id,
+            $meal_name,
+            $quantity,
+            $price,
+            $customizations
+        );
+
+        if (!$item_stmt->execute()) {
+            throw new Exception("Failed to insert order item");
+        }
+    }
+
+    $conn->commit();
+
+    echo json_encode([
+        "success" => true,
+        "order_id" => $order_id
+    ]);
+
+    $stmt->close();
+    $item_stmt->close();
+
+} catch (Exception $e) {
+    $conn->rollback();
+
+    echo json_encode([
+        "success" => false,
+        "message" => $e->getMessage()
+    ]);
 }
 
-echo json_encode(["success" => true, "order_id" => $order_id]);
-
-$stmt->close();
-$item_stmt->close();
 $conn->close();
 ?>
