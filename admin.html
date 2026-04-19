@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | MunchieCart</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="menu-page landing-glow">
+
+    <header class="navbar">
+        <h1 class="logo">MunchieCart Admin</h1>
+        <nav class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="menu.html">Menu</a>
+            <a href="cart.html">Cart</a>
+        </nav>
+    </header>
+
+    <main class="menu-wrapper">
+        <div class="menu-hero fade-up">
+            <p class="menu-kicker">Dashboard</p>
+            <h1 class="menu-page-title">Order Management</h1>
+            <p class="menu-subtext">
+                View submitted orders, customer details, and selected meal customizations.
+            </p>
+        </div>
+
+        <section class="admin-orders-section fade-up">
+            <div class="admin-section-header">
+                <div>
+                    <h2>Orders</h2>
+                    <p>Recent submitted orders from customers.</p>
+                </div>
+
+                <div class="admin-tools">
+                    <input
+                        type="text"
+                        id="searchOrders"
+                        class="admin-search"
+                        placeholder="Search by name, email, or order #"
+                    >
+                    <button class="admin-refresh-btn" onclick="loadOrders()">Refresh</button>
+                </div>
+            </div>
+
+            <div id="orders-container" class="admin-orders-grid">
+                <p>Loading orders...</p>
+            </div>
+        </section>
+    </main>
+
+    <script src="admin.js"></script>
+</body>
+</html>
