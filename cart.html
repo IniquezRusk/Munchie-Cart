@@ -47,18 +47,13 @@
                         ⚠️ This is a demo application. No real orders will be processed and no personal data is stored permanently. Do NOT store card information or real addresses.
                     </p>
 
-                    <<form onsubmit="submitOrder(event)">
-    
-    <input type="text" id="first-name" placeholder="First Name">
-    <input type="text" id="last-name" placeholder="Last Name">
-    <input type="email" id="email" placeholder="Email Address">
-    <input type="text" id="address1" placeholder="Delivery Address 1">
-    <input type="text" id="address2" placeholder="Delivery Address 2">
-    <input type="text" id="phone" placeholder="Phone Number">
-
-    <button type="submit">Place Order</button>
-
-</form>
+                    <form onsubmit="submitOrder(event)">
+                        <input type="text" id="first-name" placeholder="First Name" required>
+                        <input type="text" id="last-name" placeholder="Last Name" required>
+                        <input type="email" id="email" placeholder="Email Address" required>
+                        <input type="text" id="address1" placeholder="Delivery Address 1" required>
+                        <input type="text" id="address2" placeholder="Delivery Address 2">
+                        <input type="text" id="phone" placeholder="Phone Number" required>
 
                         <button type="submit" class="customize-cart-btn full-width-btn">Place Order</button>
                     </form>
