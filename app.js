@@ -50,7 +50,7 @@ function loadMenu() {
 
         card.innerHTML = `
             <img src="assets/${item.name.toLowerCase().replaceAll(' ', '-')}.jpg"
-                 onerror="this.src='assets/default.jpg'"
+     onerror="this.src='assets/default.jpg'"
                  alt="${item.name}">
             <div class="menu-info">
                 <h3>${item.name}</h3>
