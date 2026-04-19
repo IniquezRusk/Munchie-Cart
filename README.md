@@ -111,6 +111,7 @@ http://localhost/munchie-cart/client/index.html
 Admin dashboard:
 
 http://localhost/munchie-cart/client/admin.html
+
 Notes
 This project is intended for demonstration and educational purposes.
 No real payments are processed.
