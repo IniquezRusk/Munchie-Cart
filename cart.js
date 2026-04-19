@@ -93,6 +93,10 @@ function removeFromCart(index) {
     loadCart();
 }
 
+function goHome() {
+    window.location.href = "index.html";
+}
+
 function submitOrder(event) {
     event.preventDefault();
 
@@ -114,7 +118,7 @@ function submitOrder(event) {
         items: cart
     };
 
-    fetch("place_order.php", {
+    fetch("../server/place_order.php", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
@@ -123,15 +127,22 @@ function submitOrder(event) {
     })
     .then(res => res.json())
     .then(data => {
+        console.log("Server response:", data); // DEBUG
+
         if (data.success) {
-            alert("Order placed successfully! Order ID: " + data.order_id);
             localStorage.removeItem("cart");
             loadCart();
+
+            const overlay = document.getElementById("order-success");
+            overlay.classList.add("show");
         } else {
             alert("Something went wrong.");
         }
     })
-    .catch(err => console.error(err));
+    .catch(err => {
+        console.error("ERROR:", err);
+        alert("Failed to place order.");
+    });
 }
 
 loadCart();
