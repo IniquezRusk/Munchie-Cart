@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customize | MunchieCart</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="menu-page landing-glow">
+
+    <header class="navbar">
+    <h1 class="logo">MunchieCart</h1>
+    <nav class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="menu.html">Menu</a>
+        <a href="cart.html" class="cart-button">Cart</a>
+    </nav>
+</header>
+    <main class="menu-wrapper">
+        <div class="customize-card">
+            <div class="customize-header">
+                <img id="meal-image" class="customize-image" alt="">
+                <div class="customize-title-wrap">
+                    <h1 id="meal-name" class="customize-title"></h1>
+                    <p class="customize-subtitle">Choose what stays in your meal.</p>
+                </div>
+            </div>
+
+            <div class="ingredients-box">
+                <div class="ingredients-top">
+                    <h2>Ingredients</h2>
+                </div>
+
+                <div id="ingredients-list"></div>
+            </div>
+
+            <button class="customize-cart-btn" onclick="addCustomizedToCart()">Add to Cart</button>
+        </div>
+    </main>
+
+    <script src="customize.js"></script>
+</body>
+</html>
